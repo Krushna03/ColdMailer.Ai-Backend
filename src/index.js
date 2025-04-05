@@ -1,7 +1,7 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { app } from './app.js'
 import dotenv from 'dotenv'
-import connectDB from './src/databse/db.js'
+import connectDB from './databse/db.js'
 import cors from 'cors'
 
 dotenv.config({

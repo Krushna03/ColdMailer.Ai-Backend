@@ -1,5 +1,5 @@
 import { Email } from "../model/Email.models.js";
-import { model } from "../../index.js";
+import { model } from "../index.js";
 
 const generateEmail = async (req, res) => {
   try {
