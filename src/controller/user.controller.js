@@ -14,7 +14,13 @@ const generateAccessAndRefreshTokens = async (userID) => {
     return {accessToken, refreshToken}
 
   } catch (error) {
-    throw new ApiError(500, "Something wend wrong while generating access and refresh token")
+    return res.json(
+      {
+        success: false,
+        message: 'Something wend wrong while generating access and refresh token',
+      },
+      { status: 500 }
+    );
   }
 }
 
@@ -73,19 +79,37 @@ const login = async (req, res) => {
     const {email, password} = req.body
 
     if (!email || !password) {
-      throw new ApiError(400, "username or email is required")
+      return res.json(
+        {
+          success: false,
+          message: "username or email is required !",
+        },
+        { status: 500 }
+      );
     }
 
     const user = await UserModel.findOne({ email })
 
     if (!user) {
-      throw new ApiError(404, "User does not exist")
+      return res.json(
+        {
+          success: false,
+          message: "User does not exist !",
+        },
+        { status: 500 }
+      );
     }
 
     const isPaswordValidate = await user.isPasswordCorrect(password)
 
     if (!isPaswordValidate) {
-      throw new ApiError(404, "User password does not matched")
+      return res.json(
+        {
+          success: false,
+          message: "User password does not matched !",
+        },
+        { status: 500 }
+      );
     }
 
     const {accessToken} = await generateAccessAndRefreshTokens(user._id)

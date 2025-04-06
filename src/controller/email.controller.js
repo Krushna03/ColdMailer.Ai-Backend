@@ -5,11 +5,14 @@ const generateEmail = async (req, res) => {
   try {
     const { prompt } = req.body;
 
-    const systemPrompt = `You are an expert at writing cold emails.
-    Create a professional cold email with the following characteristics:
-    - Keep it concise and engaging
-    - Include a clear call to action
-    - Be professional and respectful`;
+    const systemPrompt = `You are an expert in crafting high-converting cold emails.
+      Generate a professional cold email based on the user's input with the following guidelines:
+      - Keep it concise, engaging, and to the point
+      - Maintain a professional and respectful tone
+      - Include a clear and compelling call to action
+
+      Do not include any additional suggestions, explanations, or content beyond the email itself.`;
+
 
 
     const result = await model.generateContent({
