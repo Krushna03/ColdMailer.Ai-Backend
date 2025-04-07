@@ -2,17 +2,10 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import { app } from './app.js'
 import dotenv from 'dotenv'
 import connectDB from './databse/db.js'
-import cors from 'cors'
 
 dotenv.config({
-  path: ".env"
+  path: "./.env"
 })
-
-app.use(cors({
-  origin: '*', 
-  credentials: true,
-}));
-
 
 
 const geminiapiKey = process.env.GEMINIAPIKEY;

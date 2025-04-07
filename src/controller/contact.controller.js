@@ -6,12 +6,11 @@ const contact = async (req, res) => {
   const { name, email, message } = req.body;
 
   if (!name || !email || !message) {
-    return res.json(
+    return res.status(500).json(
       {
         success: false,
         message: 'All fields are required',
       },
-      { status: 400 }
     );
   }
 
@@ -22,12 +21,11 @@ const contact = async (req, res) => {
     });
 
     if (!newContactMessage) {
-      return res.json(
+      return res.status(500).json(
         {
           success: false,
-          message: "Error sending message | Try registering again !",
+          message: "Error sending message | Please try again !",
         },
-        { status: 500 }
       );
     }
 

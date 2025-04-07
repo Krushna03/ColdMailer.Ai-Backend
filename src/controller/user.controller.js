@@ -14,15 +14,15 @@ const generateAccessAndRefreshTokens = async (userID) => {
     return {accessToken, refreshToken}
 
   } catch (error) {
-    return res.json(
+    return res.status(500).json(
       {
         success: false,
-        message: 'Something wend wrong while generating access and refresh token',
-      },
-      { status: 500 }
+        message: 'Error while generating access & refresh token, please try again.',
+      }
     );
   }
 }
+
 
 
 const register = async (req, res) => {
@@ -31,12 +31,11 @@ const register = async (req, res) => {
     const existingUser = await UserModel.findOne({email});
 
     if (existingUser) {
-      return res.json(
+      return res.status(500).json(
         {
           success: false,
           message: 'User already Exists',
-        },
-        { status: 400 }
+        }
       );
     }
 
@@ -47,12 +46,11 @@ const register = async (req, res) => {
       });
 
       if (!user) {
-        return res.json(
+        return res.status(500).json(
           {
             success: false,
             message: "Error registering user | Try registering again !",
           },
-          { status: 500 }
         );
       }
 
@@ -75,40 +73,38 @@ const register = async (req, res) => {
 }
 
 
+
 const login = async (req, res) => {
     const {email, password} = req.body
 
     if (!email || !password) {
-      return res.json(
+      return res.status(500).json(
         {
           success: false,
           message: "username or email is required !",
         },
-        { status: 500 }
       );
     }
 
     const user = await UserModel.findOne({ email })
 
     if (!user) {
-      return res.json(
+      return res.status(500).json(
         {
           success: false,
-          message: "User does not exist !",
+          message: "User does not exist. Please enter correct email !",
         },
-        { status: 500 }
       );
     }
 
     const isPaswordValidate = await user.isPasswordCorrect(password)
 
     if (!isPaswordValidate) {
-      return res.json(
+      return res.status(500).json(
         {
           success: false,
-          message: "User password does not matched !",
-        },
-        { status: 500 }
+          message: "Password does not matched, Please enter correct password !",
+        }
       );
     }
 
@@ -132,6 +128,7 @@ const login = async (req, res) => {
         "User logged In successFully"
     )
 }
+
 
 
 const currentUser = async (req, res) => {

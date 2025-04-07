@@ -18,7 +18,6 @@ app.use(express.static('public'))
 app.use(cookieParser())
 
 
-
 import UserRoute from './routes/user.routes.js'
 import EmailRoute from './routes/email.routes.js'
 import ContactRoute from './routes/contact.routes.js' 
