@@ -20,6 +20,12 @@ export const model = genAI.getGenerativeModel({
 });
 
 
+
+app.get('/', (req, res) => {
+  res.send('Hello');
+});
+
+
 connectDB()
 .then(() => {
     app.listen(process.env.PORT || 8000 , () =>{
@@ -35,7 +41,3 @@ connectDB()
   console.log('MongoDBconnection failed !!!' , error);
 })
 
-
-app.get('/', (req, res) => {
-  res.send('Hello');
-});
