@@ -20,24 +20,33 @@ export const model = genAI.getGenerativeModel({
 });
 
 
-
 app.get('/', (req, res) => {
   res.send('Hello');
 });
 
 
+let isConnected = false
+
 connectDB()
-.then(() => {
-    app.listen(process.env.PORT || 8000 , () =>{
-      console.log(`Server is running at Port : ${process.env.PORT}`);
-    })
-
-    app.on("error" , (error) => {
-    console.log('App error at app.on', error);
-    throw error
-    })
+  .then(() => {
+    isConnected = true
+    console.log(`Server is running at Port : ${process.env.PORT}`);
   })
-.catch((error) => {
-  console.log('MongoDBconnection failed !!!' , error);
-})
+  .catch((error) => {
+    console.log('MongoDBconnection failed !!!', error)
+  })
 
+
+  export default async function handler(req, res) {
+    if (!isConnected) {
+      res.status(500).send("MongoDB not connected")
+      return
+    }
+  
+    app(req, res)
+  
+    app.on("error", (error) => {
+      console.log('App error at app.on', error)
+      throw error
+    })
+  }
