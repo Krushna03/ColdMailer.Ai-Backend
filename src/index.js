@@ -9,9 +9,18 @@ dotenv.config({
 })
 
 app.use(cors({
-  origin: ['http://localhost:5174', 'http://localhost:5173'], 
+  origin: process.env.CLIENT_URL, 
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS', 'HEAD'],
-  credentials: true
+  allowedHeaders: [
+    'Content-Type', 
+    'Authorization',
+    'X-Requested-With',
+    'Accept',
+    'Origin'
+  ],
+  credentials: true,
+  optionsSuccessStatus: 200,
+  exposedHeaders: ['Set-Cookie']  
 }));
 
 const geminiapiKey = process.env.GEMINIAPIKEY;
