@@ -24,20 +24,14 @@ export const model = genAI.getGenerativeModel({
 });
 
 
-let isConnected = false
-
-connectDB()
-  .then(() => {
-    isConnected = true;
-    console.log("MongoDB connected");
-  })
-  .catch((error) => {
-    console.log("MongoDB connection failed !!!", error);
-  });
-
-app.get("/", (req, res) => {
-  res.send("Hello from serverless!");
+app.get("/", async (req, res) => {
+  try {
+    await connectDB();
+    res.send("Hello from serverless!");
+  } catch (error) {
+    console.error("Error on root route:", error);
+    res.status(500).send("Server error");
+  }
 });
-
 
 export default serverless(app);
