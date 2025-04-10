@@ -3,6 +3,7 @@ import { app } from './app.js'
 import dotenv from 'dotenv'
 import connectDB from './databse/db.js'
 import { OAuth2Client } from 'google-auth-library';
+import serverless from 'serverless-http';
 
 dotenv.config({
   path: "./.env"
@@ -23,35 +24,20 @@ export const model = genAI.getGenerativeModel({
 });
 
 
-app.get('/', (req, res) => {
-  res.send('Hello');
-});
-
-
 let isConnected = false
 
 connectDB()
   .then(() => {
-    isConnected = true
-    app.listen(process.env.PORT, () => {
-      console.log(`Server is running at Port : ${process.env.PORT}`);
-    });
+    isConnected = true;
+    console.log("MongoDB connected");
   })
   .catch((error) => {
-    console.log('MongoDBconnection failed !!!', error)
-  })
+    console.log("MongoDB connection failed !!!", error);
+  });
+
+app.get("/", (req, res) => {
+  res.send("Hello from serverless!");
+});
 
 
-  // export default async function handler(req, res) {
-  //   if (!isConnected) {
-  //     res.status(500).send("MongoDB not connected")
-  //     return
-  //   }
-  
-  //   app(req, res)
-  
-  //   app.on("error", (error) => {
-  //     console.log('App error at app.on', error)
-  //     throw error
-  //   })
-  // }
+export const handler = serverless(app);
