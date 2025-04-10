@@ -5,12 +5,9 @@ import cors from "cors"
 const app = express()
 
 app.use(cors({
-    origin: [process.env.CLIENT_URL, 'http://localhost:5173', 'http://localhost:5174', 'https://your-frontend-domain.com'],
-    credentials: true,
-    optionsSuccessStatus: 200,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS', 'HEAD'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin']
-  }));
+  origin: '*', 
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS', 'HEAD'],
+}));
 
 app.use(express.json({ limit: '20kb' }))
 

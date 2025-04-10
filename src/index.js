@@ -2,11 +2,14 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import { app } from './app.js'
 import dotenv from 'dotenv'
 import connectDB from './databse/db.js'
+import { OAuth2Client } from 'google-auth-library';
 
 dotenv.config({
   path: "./.env"
 })
 
+
+export const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 const geminiapiKey = process.env.GEMINIAPIKEY;
 const genAI = new GoogleGenerativeAI(geminiapiKey);
@@ -30,23 +33,25 @@ let isConnected = false
 connectDB()
   .then(() => {
     isConnected = true
-    console.log(`Server is running at Port : ${process.env.PORT}`);
+    app.listen(process.env.PORT, () => {
+      console.log(`Server is running at Port : ${process.env.PORT}`);
+    });
   })
   .catch((error) => {
     console.log('MongoDBconnection failed !!!', error)
   })
 
 
-  export default async function handler(req, res) {
-    if (!isConnected) {
-      res.status(500).send("MongoDB not connected")
-      return
-    }
+  // export default async function handler(req, res) {
+  //   if (!isConnected) {
+  //     res.status(500).send("MongoDB not connected")
+  //     return
+  //   }
   
-    app(req, res)
+  //   app(req, res)
   
-    app.on("error", (error) => {
-      console.log('App error at app.on', error)
-      throw error
-    })
-  }
+  //   app.on("error", (error) => {
+  //     console.log('App error at app.on', error)
+  //     throw error
+  //   })
+  // }
