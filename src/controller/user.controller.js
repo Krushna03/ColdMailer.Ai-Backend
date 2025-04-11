@@ -1,7 +1,7 @@
 import UserModel from "../model/User.models.js"; 
 
 
-const generateAccessAndRefreshTokens = async (userID) => {
+const generateAccessAndRefreshTokens = async (res, userID) => {
   try {
     const user = await UserModel.findById(userID)
 
