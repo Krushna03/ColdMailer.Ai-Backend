@@ -27,7 +27,6 @@ app.get('/', (req, res) => {
   res.send('Hello');
 });
 
-
 let isConnected = false
 
 connectDB()
@@ -41,17 +40,4 @@ connectDB()
     console.log('MongoDBconnection failed !!!', error)
   })
 
-
-  // export default async function handler(req, res) {
-  //   if (!isConnected) {
-  //     res.status(500).send("MongoDB not connected")
-  //     return
-  //   }
-  
-  //   app(req, res)
-  
-  //   app.on("error", (error) => {
-  //     console.log('App error at app.on', error)
-  //     throw error
-  //   })
-  // }
+export default app
