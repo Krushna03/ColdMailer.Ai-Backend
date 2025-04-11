@@ -1,7 +1,7 @@
 import UserModel from "../model/User.models.js"; 
 
 
-const generateAccessAndRefreshTokens = async (res, userID) => {
+const generateAccessAndRefreshTokens = async (userID) => {
   try {
     const user = await UserModel.findById(userID)
 
@@ -14,12 +14,8 @@ const generateAccessAndRefreshTokens = async (res, userID) => {
     return {accessToken, refreshToken}
 
   } catch (error) {
-    return res.status(500).json(
-      {
-        success: false,
-        message: 'Error while generating access & refresh token, please try again.',
-      }
-    );
+    console.error("Token generation error:", error);
+    throw new Error("Something went wrong while generating tokens.");
   }
 }
 
