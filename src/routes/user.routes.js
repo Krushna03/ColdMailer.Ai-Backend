@@ -5,15 +5,15 @@ import { verifyGoogleToken } from "../controller/google.auth.controller.js"
 
 const router = express()
 
-router.route("/api/v1/user/register").post(register)
+router.route("/register").post(register)
 
-router.route("/api/v1/user/login").post(login)
+router.route("/login").post(login)
 
-router.route('/api/v1/user/getCurrentUser').get(verifyJWT, currentUser)
+router.route('/getCurrentUser').get(verifyJWT, currentUser)
 
-router.route('/api/v1/user/logout').post(verifyJWT, logoutUser)
+router.route('/logout').post(verifyJWT, logoutUser)
 
-router.route('/api/v1/user/google/callback').get(verifyGoogleToken);
+router.route('/google/callback').get(verifyGoogleToken);
 
 
 export default router;
