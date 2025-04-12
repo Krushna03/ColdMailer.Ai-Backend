@@ -48,6 +48,7 @@ const generateEmail = async (req, res) => {
     return res.status(200).json({
       success: true,
       fullEmail,
+      emailId: email?._id
     });
 
   } catch (error) {
@@ -63,7 +64,15 @@ const generateEmail = async (req, res) => {
 
 const updateEmail = async (req, res) => {
   try {
-    const { baseEmail, modifications } = req.body  
+    const { baseEmail, modifications, emailId } = req.body  
+
+    if (!emailId) {
+      return res.status(500).json({
+        success: false,
+        message: "Email Id is not provided",
+      },
+    );
+  }
     
     const systemPromptForUpdate = `You are an expert at writing cold emails. 
     Your task is to find the mistake in the following email and correct it.
@@ -77,30 +86,31 @@ const updateEmail = async (req, res) => {
       contents: [
         {
           role: 'user',
-          parts: [{ text: baseEmail + modifications + systemPromptForUpdate }]
+          parts: [{ text: systemPromptForUpdate }]
         },
       ],
     })
 
     const updatedEmail = result.response.text();
 
-    const findPrompt = await Email.findOneAndUpdate(
-      { prompt },
+    const findPromptAndAddToChat = await Email.findOneAndUpdate(
+      { _id: emailId, userId: req.user._id},
       {
         $push: {
-          //  {
-            prompt,
-            generatedEmail: fullEmail,
-          // } 
+          chatEmails: {
+            prompt: modifications,
+            generatedEmail: updatedEmail,
+          }
         }
       }    
     )
 
-
-    await Email.create({
-        prompt: baseEmail + modifications, 
-        generatedEmail: updatedEmail,
-    });
+    if (!findPromptAndAddToChat) {
+      return res.status(500).json({
+        success: false,
+        error: 'Failed to generate email and update email',
+      });
+    }
 
     return res.status(200).json({
       success: true,
@@ -110,7 +120,7 @@ const updateEmail = async (req, res) => {
 
   } catch (error) {
       console.error('Error:', error);
-      return res.status(200).json({
+      return res.status(500).json({
         success: false,
         error: 'Failed to generate email',
       });
