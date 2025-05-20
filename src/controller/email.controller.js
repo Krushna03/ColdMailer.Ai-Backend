@@ -18,9 +18,14 @@ const generateEmail = async (req, res) => {
       - Keep it concise, engaging, and to the point
       - Maintain a professional and respectful tone
       - Include a clear and compelling call to action
-
-      Do not include any additional suggestions, explanations, or content beyond the email itself.`;
-
+      Do include any additional suggestions, explanations, or content beyond the email itself at the end of the generated email & do not use words like here is your generated email & all the related words, just additional suggestions, explanations, or content, these 3 things are needed. 
+      
+      For the additional suggestions section:
+      - Use proper bullet points (•) instead of asterisks (*) 
+      - For emphasis, use markdown bold formatting (**bold text**) for titles or key points only
+      - Keep the rest of the text normal without formatting
+      - Example: Instead of "**Title**: content" use "• Title: content"
+      - Format important points with bold text and normal descriptions`;
 
     const result = await model.generateContent({
       contents: [
@@ -80,7 +85,7 @@ const updateEmail = async (req, res) => {
     Modifications: ${modifications}
     And now as you have a proper context & the mistake, you need to correct it, such that the user will get the most accurate cold email so that the user can make out most of it.
     - Always keep one point in mind, do not suggest the user that they can refine it. You just need to correct it as per the context.
-    `;
+    Do not include any additional suggestions, explanations, or content beyond the email itself.`;
 
     const result = await model.generateContent({
       contents: [
