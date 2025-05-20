@@ -36,7 +36,7 @@ const generateEmail = async (req, res) => {
     });
 
     const fullEmail = result?.response?.text();
-    
+
     const email = await Email.create({
         prompt,
         generatedEmail: fullEmail,
