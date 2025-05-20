@@ -12,8 +12,12 @@ app.use(cors({
 app.use(express.json({ limit: '20kb' }))
 
 import ContactRoute from './routes/contact.routes.js' 
+import UserRoute from './routes/user.route.js' 
+import EmailRoute from './routes/email.routes.js' 
 
 app.use('/api/v1/contact', ContactRoute)
+app.use('/api/v1/user', UserRoute)
+app.use('/api/v1/email', EmailRoute)
 
 export { app }
 

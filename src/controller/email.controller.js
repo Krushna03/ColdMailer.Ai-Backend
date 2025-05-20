@@ -1,4 +1,4 @@
-import { Email } from "../model/Email.models.js";
+import { Email } from "../model/Email.model.js";
 import { model } from "../index.js";
 
 const generateEmail = async (req, res) => {
