@@ -79,13 +79,25 @@ const updateEmail = async (req, res) => {
     );
   }
     
-    const systemPromptForUpdate = `You are an expert at writing cold emails. 
-    Your task is to find the mistake in the following email and correct it.
+    const systemPromptForUpdate = `You are an expert at writing high-converting cold emails. 
+    Your task is to update the following email based on the user's modifications while maintaining its professional quality.
+    
     Base Email: ${baseEmail}
     Modifications: ${modifications}
-    And now as you have a proper context & the mistake, you need to correct it, such that the user will get the most accurate cold email so that the user can make out most of it.
-    - Always keep one point in mind, do not suggest the user that they can refine it. You just need to correct it as per the context.
-    Do not include any additional suggestions, explanations, or content beyond the email itself.`;
+    
+    Guidelines for your updated email:
+    - Keep it concise, engaging, and to the point
+    - Maintain a professional and respectful tone
+    - Include a clear and compelling call to action
+    
+    After the updated email, include additional suggestions, explanations, or content that might help the user further improve their email. Do not use introductory phrases like "here is your updated email" or similar wording.
+    
+    For the additional suggestions section:
+    - Use proper bullet points (•) instead of asterisks (*) 
+    - For emphasis, use markdown bold formatting (**bold text**) for titles or key points only
+    - Keep the rest of the text normal without formatting
+    - Example: Instead of "**Title**: content" use "• Title: content"
+    - Format important points with bold text and normal descriptions`;
 
     const result = await model.generateContent({
       contents: [
