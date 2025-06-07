@@ -145,4 +145,160 @@ const updateEmail = async (req, res) => {
 }
 
 
-export { generateEmail, updateEmail }
+const getUserEmailHistory = async (req, res) => {
+    try {
+      const { userID } = req.query;
+
+      if(!userID){
+        return res.status(500).json({
+          success: false,
+          message: "UserID is not provided"
+        })
+      }
+
+      const getEmails = await Email.find({ userId: userID }).sort({ createdAt: -1})
+
+      if (!getEmails || getEmails.length === 0) {
+        return res.status(500).json({
+          success: false,
+          message: "No emails found"
+        })
+      }
+
+      const updatedEmails = getEmails.map(email => {
+        return {
+          ...email._doc,
+          chatEmails: [...email.chatEmails].reverse()
+        };
+      });
+
+      return res.status(200).json({
+        success: true,
+        emails: updatedEmails,
+        message: "Emails fetched successfully"
+      })
+
+    } catch (error) {
+      console.error('Error:', error);
+      return res.status(500).json({
+        success: false,
+        error: 'Failed to get email history',
+      });
+    }
+}
+
+
+const updateEmailHistory = async (req, res) => {
+    const { emailId, modification, baseprompt, prevchats } = req.body;
+
+    if (!emailId) {
+      return res.status(500).json({
+        success: false,
+        message: "Email Id is not provided",
+      });
+    }
+    if (!modification) {
+      return res.status(500).json({
+        success: false,
+        message: "Prompt is not provided",
+      });
+    }
+
+    let formattedPrevChats  = '';
+    for(let i = 0; i < prevchats.length; i++) {
+      formattedPrevChats += `\n• ${prevchats[i]}`;
+    }
+
+    const systemPrompt = `You are an expert email optimization specialist focused on crafting high-converting cold emails through iterative refinement.
+
+    CONTEXT & EVOLUTION:
+    Base Email: ${baseprompt}
+    Current Modification Request: ${modification}
+    Previous Refinements: ${formattedPrevChats}
+    
+    TASK:
+    Analyze the evolution of this email through previous modifications and apply the current requested changes while maintaining consistency with the established direction and tone. Consider what has been tried before to avoid repetition and build upon successful elements.
+    
+    OPTIMIZATION GUIDELINES:
+    - Maintain the core message and value proposition from the base email
+    - Incorporate lessons learned from previous iterations (avoid reverting successful changes)
+    - Apply the current modification request while preserving what's working
+    - Ensure the email remains concise, engaging, and professional
+    - Include a compelling call to action that aligns with the email's evolution
+    - Keep the tone consistent with the established voice from previous versions
+    
+    RESPONSE FORMAT:
+    Provide ONLY the refined email content. Do not include any additional suggestions, explanations, introductory text, or commentary. The response should contain exclusively the optimized email text that can be used directly.
+    
+    OUTPUT REQUIREMENTS:
+    - Start immediately with the email content
+    - No prefacing phrases like "Here's your email" or similar
+    - No additional sections or suggestions
+    - Clean, ready-to-use email format only`;
+
+
+    console.log("SystemPrompt", systemPrompt);
+
+    const result = await model.generateContent({
+      contents: [
+        {
+          parts: [{ text: systemPrompt + baseprompt }]
+        },
+      ],
+    });
+
+    const fullEmail = result?.response?.text();
+
+    const foundEmailHistory = await Email.findOneAndUpdate(
+      { _id: emailId, userId: req.user._id},
+      {
+        $push: {
+          chatEmails: {
+            prompt: modification,
+            generatedEmail: fullEmail,
+          }
+        }
+      }    
+    )
+
+    if (!foundEmailHistory) {
+      return res.status(500).json({
+        success: false,
+        error: 'Failed to update email history',
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      updatedEmail: fullEmail,
+      message: "Email history updated successfully"
+    });
+}
+
+
+const deleteEmail = async (req, res) => {
+    const { emailId } = req.body
+
+    if (!emailId) {
+      return res.status(500).json({
+        success: false,
+        message: "Email Id is not provided",
+      });
+    }
+
+    const deletedEmail = await Email.findOneAndDelete({ _id: emailId, userId: req.user._id });
+
+    if (!deletedEmail) {
+      return res.status(500).json({
+        success: false,
+        error: 'Failed to delete email',
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Email deleted successfully"
+    });
+}
+
+export { generateEmail, updateEmail, getUserEmailHistory, updateEmailHistory, deleteEmail }
